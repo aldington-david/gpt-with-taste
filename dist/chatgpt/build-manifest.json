@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "recipe": {
+    "id": "gpt-with-taste",
+    "version": "0.1.0",
+    "manifest": "recipe/manifest.json"
+  },
+  "target": "chatgpt",
+  "adapter": "adapters/chatgpt/build.mjs",
+  "sources": {
+    "main": "recipe/main.md",
+    "sub": "recipe/sub.md",
+    "independent": "recipe/independent.md",
+    "userSteer": "recipe/user-steer.md",
+    "subSteer": "recipe/sub-steer.md",
+    "agentSteer": "recipe/agent-steer.md"
+  },
+  "files": [
+    "dist/chatgpt/.codex-plugin/plugin.json",
+    "dist/chatgpt/PROVENANCE.md",
+    "dist/chatgpt/build-manifest.json",
+    "dist/chatgpt/skills/taste/SKILL.md"
+  ]
+}

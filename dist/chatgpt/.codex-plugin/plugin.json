@@ -1,0 +1,7 @@
+{
+  "name": "gpt-with-taste-chatgpt",
+  "version": "0.1.0-rc.1",
+  "description": "Taste preferences using the native ChatGPT runtime.",
+  "license": "MIT",
+  "skills": "./skills/"
+}
