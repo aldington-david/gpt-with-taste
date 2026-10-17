@@ -229,7 +229,7 @@ test('model-facing exports contain only complete behavior; provenance stays in s
   for (const target of TARGETS) assert.match(content(files, `dist/${target}/build-manifest.json`), /recipe\/manifest\.json/);
 });
 
-test('portable sources remain verbatim; native projection rejects unreviewed replacement sources', async t => {
+test('all projections preserve source text; native excerpts remain separate from literal content', async t => {
   const root = await fixture(t), {meta} = await loadRecipe(root), texts = {};
   for (const key of TEXT_KEYS) {
     texts[key] = ` \t\r\n# User-owned ${key}\r\n\r\nKeep this literal: <!-- Generated from my example. -->\r\n  tail\t \r\n\r\n`;
@@ -237,8 +237,12 @@ test('portable sources remain verbatim; native projection rejects unreviewed rep
   }
   assert.deepEqual((await loadRecipe(root)).texts, texts);
   assertBehaviorExports(await compile(root, TARGETS.filter(target => !['codex', 'chatgpt'].includes(target))), {meta, texts});
-  await assert.rejects(compile(root, ['codex']), /Review the upstream/);
-  await assert.rejects(compile(root, ['chatgpt']), /Review the upstream/);
+  const native = await compile(root, ['codex', 'chatgpt']);
+  for (const key of ['main', 'sub', 'independent'])
+    assert.ok(content(native, `dist/codex/${meta.texts[key]}`).endsWith(texts[key]));
+  for (const key of ['userSteer', 'subSteer', 'agentSteer'])
+    assert.equal(content(native, `dist/codex/${meta.texts[key]}`), texts[key]);
+  assert.ok(content(native, 'dist/chatgpt/skills/taste/SKILL.md').endsWith(texts.main));
 });
 
 test('actual generated callbacks and simulated provider payloads keep author metadata out of model context', async t => {

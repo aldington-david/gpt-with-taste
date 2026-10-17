@@ -1,13 +1,25 @@
-# 候选版验证记录
+# 验证记录：原文恢复候选版
 
-日期：2026-10-17。环境：Linux，Node.js 22.16.0。
+日期：2026-10-18；环境：Linux，Node.js 22.16.0。
 
-实际执行：`node --test adapters/codex/native.test.mjs`，11 项通过、0 项失败。`node scripts/build.mjs --target codex --target chatgpt` 及同目标 `--check` 通过，生成 19 个文件。
+实际执行：
 
-覆盖：官方片段不重复、官方人格不误入、Main/Sub 交互范围、技能/App/插件/Shell/科学图条款、旧 Taste 段落替换、上游修改锚点时停止静默编译、短提醒长度、作者安装入口与 dist 一致、ChatGPT 不加载 Codex API、作者源对象不被修改、确定性构建与只读漂移检查。
+```text
+node --test adapters/codex/native.test.mjs
+12 tests passed, 0 failed, 0 skipped
 
-本地无法直接克隆远程仓库；相关文件通过已连接 GitHub 读取并建立本地副本。Main、Sub、Independent、三份作者 Steer、原构建代码和原构建测试分别核对了返回的 Git blob 标识，之后再修改。没有用占位作者内容参与本次测试；其他宿主尚未完整物化到本地。
+node scripts/build.mjs --target codex --target chatgpt
+node scripts/build.mjs --target codex --target chatgpt --check
+19 generated files checked
 
-尚未在本地执行完整 `npm test`、全部宿主 build:check、Codex CLI 安装/恢复及 Windows 实机流程。没有进行模型输出对照、真实 hook 接收上下文检查或 ChatGPT 注册。11 项通过不代表上述未执行项目通过。
+node --check scripts/build.test.mjs
+Syntax check passed; the full multi-harness test file was not executed.
+```
 
-原有 CI 和跨宿主测试保留，新测试纳入 npm test。旧测试仅调整 Codex 的组合预期和对应 hook 正文，其他客户端仍验证作者文本逐字导出。CI 结果须以 GitHub 当前运行记录为准。本文件记录本地验证，不冒充 CI 通过证明。
+覆盖：Main/Sub/Independent 连续全文字节保留；12 处历史删改恢复至原位置；原版 Steer 五段/三段/三段及结尾换行保留；不做空白规范化；非空过滤器拒绝；官方片段只出现一次且有正确顺序和标题层级；Sub 不含根角色异步对话；ChatGPT 无 Codex policy 依赖；构建输出路径与原安装入口一致；输出变动能被只读检查发现。
+
+集成部分使用真实 `pluginBundle` 和原版 `hooks/steer.mjs`：临时生成插件文件，在隔离含空格/中文路径启动实际 Node CLI，逐字核对完整提醒 JSON；测试父代理输入、子代理启动、首次重复事件、后续事件、邮箱等待，以及超时/未完成负例。它没有调用 Codex 安装 CLI，没有改动真实 Codex home，也没有证明接收模型看到了这些 JSON。
+
+物化用到的 6 份 Taste 作者文本、官方快照、编译器和 hook/打包支持模块，对照 GitHub 的 blob 标识核对。这是本次来源同步与完整性检查，不是对任务执行增加通用哈希要求。
+
+本地未物化完整的其他宿主，故未运行完整 `npm test`；未把针对性测试说成全仓库 CI。真实 Codex 安装/恢复、Windows launcher、hook 信任、模型实际接收上下文、完整 Sub 角色加载、ChatGPT 注册和模型行为/性能对照均未验证。C1、C2 的语义冲突仍在待确认清单，测试通过不表示它们已解决。

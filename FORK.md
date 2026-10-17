@@ -1,69 +1,45 @@
-# Taste · Codex 原生机制定制版
+# Taste + Codex 原生机制：原文恢复候选版
 
-候选版本：`codex-native-0.1.0-rc.1`，分支 `codex-native-mechanisms`。继续使用方案Ⅰ：`model_instructions_file` 读取“适用的官方机制片段＋Taste 偏好”，沿用作者安装器。不是追加到官方默认 Main 的方案Ⅱ。
+本分支继续使用方案Ⅰ：通过 `model_instructions_file` 读取“官方机制摘录 + Taste 正文”，沿用作者安装器。当前是 `codex-native-0.1.0-rc.2` 恢复候选版，不是已验证可直接安装的发布版本。
 
-## 修改范围
+## 这次纠正了什么
 
-工具调用、skill 发现与读取、Apps/MCP/插件入口、Shell 转义、权限询问、任务续接、进度频道、本地文件链接和科学图表交付，采用固定版本的 OpenAI 公开 Astra 模板片段。没有导入官方整套人格和写作禁词表。Taste 的目的判断、自然表达、研究方法、视觉质量和协作经验保留。
+此前 `f2dd633` 的 12 处正文删改和 3 份短提醒不符合完整保留 Taste 的目标，现已撤销。Main/Sub/Independent 的 Taste 部分完整逐字保留，三个事件提醒直接使用原版全文。ChatGPT skill 也不再套用 Codex 的删除过滤器。
 
-`adapters/codex/patches.json` 保存被替换的 Taste 原段落。上游改动这些段落后，构建要求重新审阅，不静默删除新内容。未命中这些段落的上游变更仍需人工审阅；构建通过不证明语义完全兼容。
+官方工具、skill、App、插件、交互与产物机制仍在独立章节中保留，沿用固定 Astra 公开来源。Sub 的产物章节恢复原有标题层级，但不加载主代理对用户的异步提问流程。`binding.md` 仅作运行环境、角色沟通和状态区分的衔接，不冒称官方原文。
 
-Main、Sub、Independent 共用官方来源。Sub 只加入通用工具与产物格式约定，不加载 Main 面向用户的异步问答流程。原生角色、leaf 状态、工具、权限、并发额度和消息机制仍由 Codex 提供，没有复制成另一套角色配置。主代理仍负责整合和最终验收。
+完整审计见 [RESTORATION-AUDIT.md](docs/fork/RESTORATION-AUDIT.md)，逐项原删除内容见 [历史删除清单](docs/fork/history/f2dd633-patches.json)，测试范围见 [VALIDATION.md](docs/fork/VALIDATION.md)。
 
-三份 Steer 改为短提醒，不每轮重灌官方机制全文。现有 hook 的事件识别、配对去重、路径、信任与恢复流程没有重写；客户端没有派发的事件仍是限制。
+## 先确认两处冲突
 
-## 来源与适用范围
+C1：官方的主代理进度频率与 Taste 的事件式沟通边界。
+C2：必要 skill 缺失时停止整个轮次，还是只暂停依赖该 skill 的部分。
 
-官方来源：`openai/codex` 提交 `ce0323f2f2d3b25e82806cd555237da3db4e1897` 的 `codex-rs/models-manager/models.json`，`gpt-6-astra.model_messages.instructions_template`。这是批准使用的公开快照，不是当前账户的有效上下文，也不代表所有模型或客户端版本均已适配。
+双方原文现均保留，没有用“官方优先”一语替用户作出新的取舍。PR 保持草稿；确认并完成实际宿主验收前，不建议用它覆盖日常配置。
 
-`adapters/codex/official/astra-base.md` 保存解码后的官方原文；选择的章节见 `adapters/codex/upstreams.json`。`binding.md` 是本 fork 编写的适用范围衔接，不冒称 OpenAI 原文。具体 API 仅在当前宿主确实提供时适用，工具 schema 和原生角色/权限仍决定可执行操作。
+## 源码与构建
 
-替换后的 Main 比原 Taste 更长。固定官方快照不会自动随 Codex 升级；未来更新由每日审阅报告提出，再由用户决定。没有经过语言盲测、长期任务成功率或延迟测试。
+`recipe/` 仍是完整上游作者源。`adapters/codex/compose.mjs` 组合原样官方摘录和 Taste 全文，`patches.json` 只允许空清单；不自动删句或压缩。原版 Steer 不再经过 `steering.json`。`adapters/chatgpt/` 独立生成偏好 skill，未导入 Codex 接口和 hooks。
 
-## 构建与验收
-
-在完整仓库中使用 Node.js 22 或更高版本，不需要给主构建安装 npm 依赖：
-
-```powershell
-git clone --branch codex-native-mechanisms --single-branch https://github.com/aldington-david/gpt-with-taste.git taste-codex-native
-cd taste-codex-native
+```sh
+node scripts/build.mjs --target codex --target chatgpt
 node scripts/build.mjs --target codex --target chatgpt --check
 npm run test:codex-native
 ```
 
-完整 CI 保留 `npm run build:check`、`npm test` 和其他宿主的测试；旧测试中“所有宿主逐字输出 recipe”的预期仅为 Codex 改为组合输出，其他宿主仍要求逐字一致。
+这些构建和测试不安装到真实 Codex home。完整仓库测试仍用 `npm test`；本轮没有声称全宿主 CI 已通过。
 
-## 安装与恢复
+## 安装和恢复没有换入口
 
-先在隔离的 Codex home 验收，不要直接覆盖日常配置：
+以后确认安装时，仍用作者的 `node scripts/install.mjs --hooks` 及对应 `--home`。继续保留原安装 clone 和 `.gpt-with-taste/install-receipt.json`；不要从新 clone 接管一份已有 receipt 的安装。插件名称沿用原版，不与原版同名并排安装。
 
-```powershell
-node scripts/install.mjs --home "C:/Users/Ken_n/.codex-taste-native-test" --hooks --dry-run
-node scripts/install.mjs --home "C:/Users/Ken_n/.codex-taste-native-test" --hooks
-node scripts/install.mjs --home "C:/Users/Ken_n/.codex-taste-native-test" --check
-```
+恢复仍使用同一 clone、同一 home 的 `node scripts/install.mjs --restore`；先用 `--dry-run` 预览。关闭插件只停用 hooks，不撤销 `model_instructions_file`。本轮没有实际安装、恢复、修改权限、信任 hook 或配置子代理角色。
 
-示例目录用于隔离测试。运行所需的登录、权限和客户端设置仍通过正常流程配置，不复制认证文件。安装不会自动批准 hook；在同一 home 的 Codex 审核信任后，新开会话检查真实指令和事件送达。仅安装检查通过不代表 hook 生效。
+默认安装只复制完整 Sub 文件，不自动为所有自定义角色注册它。生成有 Sub、hook 脚本输出正确、模型实际收到 Sub，是三个不同的验收点。真实客户端事件覆盖与完整上下文仍需检查。
 
-保留执行安装的仓库和 `.gpt-with-taste/install-receipt.json`，在同一仓库、同一个 home 恢复：
+## 来源和更新
 
-```powershell
-node scripts/install.mjs --restore --home "C:/Users/Ken_n/.codex-taste-native-test" --dry-run
-node scripts/install.mjs --restore --home "C:/Users/Ken_n/.codex-taste-native-test"
-```
+Taste 基线：`079fb262b4d7932515ba4e6341fd57b6f2122f4a`。
+官方基线：`openai/codex@ce0323f2f2d3b25e82806cd555237da3db4e1897` 的 `gpt-6-astra.model_messages.instructions_template`。
 
-插件 ID 沿用 `gpt-with-taste@gpt-with-taste-local`，不能作为原版之外的另一份同名插件并排启用。已有原版安装时，保留原安装记录并按作者恢复/所有权流程处理，不强行接管另一 clone 的安装。停用插件只停用 hooks，基础指令配置仍在。恢复安装不撤销此前修改的项目代码。
-
-`sub.md` 不会自动配置到全部自定义角色。明确采用时要保留既有角色指令、leaf 状态和权限边界，并检查是否已经继承完整正文，避免重复加载。
-
-## ChatGPT 偏好版
-
-新增 `chatgpt` 目标仅生成 `dist/chatgpt/skills/taste/SKILL.md` 及兼容插件清单，不加入 Codex API、MCP 或本地 hooks。普通 ChatGPT 保留其自己的基础指令、工具和权限。通过支持的插件注册流程使用，不把 ZIP 上传当作所有账户都具备的安装方式，也不要把 Codex Main 当成普通 ChatGPT 的完整系统提示词。本次没有替用户注册插件或安装到日常环境。
-
-其他宿主的作者源、适配器和生成产物保持原样。Codex 特有组合放在其适配层，`recipe/` 仍是跨宿主的作者源，`prompts/` 仍由构建生成。
-
-## 更新与许可证
-
-每日任务只读审阅 Taste 和相关官方机制更新，并评价改动及与本分支的冲突；已报告不等于已合入，不自动同步、提交、安装或信任 hooks。
-
-根目录 MIT 许可证继续适用于 Taste 原作者源与原有代码。导入的 OpenAI 原文采用 Apache-2.0，完整许可证和 NOTICE 位于 `adapters/codex/official/` 及 Codex 发行目录。本 fork 的组合、摘录和衔接调整记录在 `upstreams.json`。这不是 OpenAI 官方发行版。
+这些是固定公开快照，不是账户实时提示词，也不证明所有模型和客户端都兼容。上游变更只审阅、报告和给建议；不自动合入或安装。后续任何 Taste 原句替换均需逐句列出及用户批准。

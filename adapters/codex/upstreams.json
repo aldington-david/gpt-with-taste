@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "forkRevision": "codex-native-0.1.0-rc.1",
+  "forkRevision": "codex-native-0.1.0-rc.2",
   "plan": "I: model_instructions_file replacement",
   "fork": {
     "repository": "aldington-david/gpt-with-taste",
@@ -9,7 +9,8 @@
   "taste": {
     "repository": "NB-Corp/gpt-with-taste",
     "branch": "master",
-    "reviewedCommit": "079fb262b4d7932515ba4e6341fd57b6f2122f4a"
+    "reviewedCommit": "079fb262b4d7932515ba4e6341fd57b6f2122f4a",
+    "preservation": "Complete author sources and all three reminders retained verbatim."
   },
   "official": {
     "repository": "openai/codex",
@@ -31,25 +32,35 @@
       "Plugins"
     ],
     "sub": [
+      "Working with the user > Final answer > Formatting rules",
+      "Working with the user > Final answer > Visualizations",
       "Rules for getting work done",
       "Using skills",
       "Apps (Connectors)",
-      "Plugins",
-      "Formatting rules",
-      "Visualizations"
+      "Plugins"
     ]
   },
   "adaptations": {
-    "binding.md": "Fork-authored applicability and native-role bridge, NOT verbatim OpenAI text. Native role/permission messages are not copied.",
-    "patches.json": "Exact reviewed Taste paragraphs removed from Codex projections; edits at these paragraphs require review.",
-    "steering.json": "Fork-authored compact reminders replacing Codex-only projections; no full mechanism reinjection."
+    "binding.md": "Fork-authored runtime applicability, role-channel scoping and state distinctions. NOT verbatim OpenAI text. Native role/permission messages are not copied.",
+    "patches.json": "All previous deletion entries reversed. Empty arrays are required; future replacements require separate review.",
+    "steering": "Uses recipe/user-steer.md, recipe/sub-steer.md and recipe/agent-steer.md verbatim. No summary and no additional full-template injection.",
+    "chatgpt": "Uses the complete Taste Main source verbatim, without the Codex deletion filter or mechanism excerpts."
+  },
+  "review": {
+    "status": "Restored candidate; wording conflicts await user decision.",
+    "previousCandidate": "f2dd6332e40bf7a9c0fdfdd1af35304ef2588d58",
+    "audit": "docs/fork/RESTORATION-AUDIT.md",
+    "pending": [
+      "C1: fixed progress cadence versus event-driven Taste updates",
+      "C2: stopping on a missing required skill versus continuing independent authorized work"
+    ]
   },
   "officialDocs": [
     "https://developers.openai.com/codex/multi-agent",
     "https://learn.chatgpt.com/docs/hooks",
     "https://developers.openai.com/plugins/build/plugins"
   ],
-  "checkedDate": "2026-10-17",
+  "checkedDate": "2026-10-18",
   "autoMerge": false,
   "autoInstall": false
 }

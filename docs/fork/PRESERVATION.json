@@ -1,0 +1,41 @@
+{
+  "main": {
+    "original_utf8_bytes": 24378,
+    "original_full_text_preserved": true,
+    "old_filtered_utf8_bytes": 21962,
+    "restored_passages": 5,
+    "generated_utf8_bytes": 40735
+  },
+  "sub": {
+    "original_utf8_bytes": 16314,
+    "original_full_text_preserved": true,
+    "old_filtered_utf8_bytes": 14251,
+    "restored_passages": 5,
+    "generated_utf8_bytes": 26507
+  },
+  "independent": {
+    "original_utf8_bytes": 5562,
+    "original_full_text_preserved": true,
+    "old_filtered_utf8_bytes": 4078,
+    "restored_passages": 2,
+    "generated_utf8_bytes": 21919
+  },
+  "userSteer": {
+    "original_utf8_bytes": 4161,
+    "original_paragraphs": 5,
+    "identical_generated_bytes": true
+  },
+  "subSteer": {
+    "original_utf8_bytes": 2552,
+    "original_paragraphs": 3,
+    "identical_generated_bytes": true
+  },
+  "agentSteer": {
+    "original_utf8_bytes": 2432,
+    "original_paragraphs": 3,
+    "identical_generated_bytes": true
+  },
+  "chatgpt": {
+    "complete_main_preserved": true
+  }
+}
