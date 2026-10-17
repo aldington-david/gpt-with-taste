@@ -1,6 +1,6 @@
-# Taste + Codex 原生机制：原文恢复候选版
+# Taste + Codex 原生机制：原文保留候选版
 
-本分支继续使用方案Ⅰ：通过 `model_instructions_file` 读取“官方机制摘录 + Taste 正文”，沿用作者安装器。当前是 `codex-native-0.1.0-rc.2` 恢复候选版，不是已验证可直接安装的发布版本。
+本分支继续使用方案Ⅰ：通过 `model_instructions_file` 读取“官方机制摘录 + Taste 正文”，沿用作者安装器。当前是 `codex-native-0.1.0-rc.3` 候选版，不是已验证可直接安装的发布版本。
 
 ## 这次纠正了什么
 
@@ -10,16 +10,17 @@
 
 完整审计见 [RESTORATION-AUDIT.md](docs/fork/RESTORATION-AUDIT.md)，逐项原删除内容见 [历史删除清单](docs/fork/history/f2dd633-patches.json)，测试范围见 [VALIDATION.md](docs/fork/VALIDATION.md)。
 
-## 先确认两处冲突
+## C1 / C2 已处理
 
-C1：官方的主代理进度频率与 Taste 的事件式沟通边界。
-C2：必要 skill 缺失时停止整个轮次，还是只暂停依赖该 skill 的部分。
+C1 结合 Taste 全文解释为：执行期间及时反馈，内容仍按 Taste 筛选，不逐条播报工具调用。原文没有要求全程沉默，也不只针对跨代理沟通。本次不为 C1 删改提示词或新增规则。
 
-双方原文现均保留，没有用“官方优先”一语替用户作出新的取舍。PR 保持草稿；确认并完成实际宿主验收前，不建议用它覆盖日常配置。
+C2 用户选择 B：缺少必要 skill 时，报告受影响的工作，只暂停依赖部分，继续已授权且独立的工作；没有独立工作时才结束当前轮次。官方原始快照不变，仅在生成的 Codex 章节中替换一句。
+
+完整前后原句、中文解释和验证范围见 [C1-C2-DECISIONS.md](docs/fork/C1-C2-DECISIONS.md)。PR 仍为草稿，真实宿主加载和行为效果尚未验证，不据此声称已安装可用。
 
 ## 源码与构建
 
-`recipe/` 仍是完整上游作者源。`adapters/codex/compose.mjs` 组合原样官方摘录和 Taste 全文，`patches.json` 只允许空清单；不自动删句或压缩。原版 Steer 不再经过 `steering.json`。`adapters/chatgpt/` 独立生成偏好 skill，未导入 Codex 接口和 hooks。
+`recipe/` 仍是完整上游作者源。`adapters/codex/compose.mjs` 组合官方机制摘录（含用户批准的 C2 单句适配）和 Taste 全文，`patches.json` 只允许空清单；不自动删句或压缩。原版 Steer 不再经过 `steering.json`。`adapters/chatgpt/` 独立生成偏好 skill，未导入 Codex 接口和 hooks。
 
 ```sh
 node scripts/build.mjs --target codex --target chatgpt

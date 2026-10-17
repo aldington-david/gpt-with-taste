@@ -1,3 +1,24 @@
+# 验证记录：rc.3 C1 / C2
+
+日期：2026-10-18。本轮实际运行：
+
+```text
+node --test adapters/codex/decisions.test.mjs
+5 passed, 0 failed
+
+实际调用 src/build.mjs 的 compile(root, ['codex', 'chatgpt'])
+生成并重读核对 19 个输出；与改动前基线对照，Markdown 差异只含 C2 单句替换。
+
+node --check adapters/codex/native.test.mjs
+语法检查通过。
+```
+
+C1 没有新增运行时规则。Taste Main/Sub/Independent 全文、三份完整 Steer、ChatGPT skill、binding 和官方源快照均保持不变。新增测试纳入 native.test 入口；本轮未重跑旧 native 全套、全仓库 npm test、真实客户端安装/信任/事件及模型行为测试。具体断言和范围见 `C1-C2-DECISIONS.md`。
+
+以下保留 rc.2 的历史执行记录；其“两项待确认”已由上述本轮决定取代，历史通过数不累加冒充本轮执行。
+
+---
+
 # 验证记录：原文恢复候选版
 
 日期：2026-10-18；环境：Linux，Node.js 22.16.0。

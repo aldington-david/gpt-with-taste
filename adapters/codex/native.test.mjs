@@ -1,3 +1,4 @@
+import './decisions.test.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -6,7 +7,7 @@ import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {loadRecipe, compile, TEXT_KEYS} from '../../src/build.mjs';
-import {loadPolicy, compose, section, preferenceText} from './compose.mjs';
+import {loadPolicy, compose, section, officialSection, preferenceText} from './compose.mjs';
 import {run} from '../../scripts/build.mjs';
 import {pluginBundle, MARKET_ROOT} from '../../src/codex-plugin.mjs';
 
@@ -60,11 +61,11 @@ test('no hidden deletion, normalization, or replacement can pass through prefere
   for (const key of ['userSteer', 'subSteer', 'agentSteer']) assert.equal(result[key], varied[key]);
 });
 
-test('Main keeps each selected official section once and does not import official personality', () => {
+test('Main keeps each selected official section once, with only the approved C2 adaptation', () => {
   let position = -1;
   for (const heading of ['# When to ask the user for permission', '# Working with the user',
     '# Rules for getting work done', '# Using skills', '# Apps (Connectors)', '# Plugins']) {
-    const excerpt = section(policy.official, heading);
+    const excerpt = officialSection(policy.official, heading);
     assert.equal(generated.main.split(excerpt).length - 1, 1, heading);
     const next = generated.main.indexOf(excerpt); assert.ok(next > position); position = next;
   }
@@ -77,7 +78,7 @@ test('Sub artifact excerpts retain native parent headings and order, without roo
   assert.ok(sub.indexOf('### Visualizations') < sub.indexOf('# Rules for getting work done'));
   assert.doesNotMatch(sub, /request_user_input_async|## Intermediate commentary/);
   for (const heading of ['### Formatting rules', '### Visualizations', '# Using skills', '# Apps (Connectors)', '# Plugins'])
-    assert.equal(sub.split(section(policy.official, heading)).length - 1, 1);
+    assert.equal(sub.split(officialSection(policy.official, heading)).length - 1, 1);
 });
 
 test('runtime applicability keeps actual tool and role boundaries without a new polling-method ban', () => {

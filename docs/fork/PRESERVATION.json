@@ -4,21 +4,21 @@
     "original_full_text_preserved": true,
     "old_filtered_utf8_bytes": 21962,
     "restored_passages": 5,
-    "generated_utf8_bytes": 40735
+    "generated_utf8_bytes": 41103
   },
   "sub": {
     "original_utf8_bytes": 16314,
     "original_full_text_preserved": true,
     "old_filtered_utf8_bytes": 14251,
     "restored_passages": 5,
-    "generated_utf8_bytes": 26507
+    "generated_utf8_bytes": 26875
   },
   "independent": {
     "original_utf8_bytes": 5562,
     "original_full_text_preserved": true,
     "old_filtered_utf8_bytes": 4078,
     "restored_passages": 2,
-    "generated_utf8_bytes": 21919
+    "generated_utf8_bytes": 22287
   },
   "userSteer": {
     "original_utf8_bytes": 4161,

@@ -101,7 +101,7 @@ If a skill causes you to ask for permission or confirmation, pause, or leave req
 
 ## When to use a skill
 
-If the user names a skill (with $SkillName or plain text) add the usage of that skill to your current working plan. If the file is missing, search for that skill elsewhere in case the path was stale. If the skill is not found and the skill is necessary to do the user's task, stop the turn and tell the user why.
+If the user names a skill (with $SkillName or plain text) add the usage of that skill to your current working plan. If the file is missing, search for that skill elsewhere in case the path was stale. If the skill is not found and it is necessary for part of the user's task, report the missing skill and the affected work through your role's permitted communication channel, and pause only the work that depends on it. Continue already-authorized work that is independent of the missing skill. Do not pretend to have used the skill or bypass an explicit requirement to use it. If no independent work remains, end the turn after explaining the blocker and what is needed to resume.
 
 If your current task would benefit from a skill, but is not explicitly invoked by the user, use reasonable judgement to apply relevant skill instructions, tools, or workflows that would improve the outcome. Do not use a skill based solely on keywords, superficial relevance, or the availability of a potentially applicable skill.
 

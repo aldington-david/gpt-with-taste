@@ -11,6 +11,22 @@ export function section(source, heading) {
   return source.slice(headings[start].index, next?.index ?? source.length).trim();
 }
 
+// C2-B is a user-approved adaptation of one official sentence. Keep the
+// vendored source unchanged and reject source drift instead of guessing a match.
+export const missingSkillAdjustment = Object.freeze({
+  before: "If the skill is not found and the skill is necessary to do the user's task, stop the turn and tell the user why.",
+  after: "If the skill is not found and it is necessary for part of the user's task, report the missing skill and the affected work through your role's permitted communication channel, and pause only the work that depends on it. Continue already-authorized work that is independent of the missing skill. Do not pretend to have used the skill or bypass an explicit requirement to use it. If no independent work remains, end the turn after explaining the blocker and what is needed to resume.",
+});
+
+export function officialSection(source, heading) {
+  const excerpt = section(source, heading);
+  if (heading !== '# Using skills') return excerpt;
+  const {before, after} = missingSkillAdjustment;
+  if (excerpt.split(before).length !== 2)
+    throw new Error('Review official C2-B source drift: expected one missing-required-skill sentence');
+  return excerpt.replace(before, after);
+}
+
 export function preferenceText(source, edits, key) {
   if (typeof source !== 'string' || !source.trim())
     throw new Error(`Missing Taste source: ${key}`);
@@ -32,9 +48,9 @@ export async function loadPolicy(root) {
 
 export function compose(texts, policy) {
   const common = ['# Rules for getting work done', '# Using skills', '# Apps (Connectors)', '# Plugins']
-    .map(heading => section(policy.official, heading));
+    .map(heading => officialSection(policy.official, heading));
   const delivery = ['### Formatting rules', '### Visualizations']
-    .map(heading => section(policy.official, heading));
+    .map(heading => officialSection(policy.official, heading));
   const interaction = [section(policy.official, '# When to ask the user for permission'),
     section(policy.official, '# Working with the user')];
   const result = {};
