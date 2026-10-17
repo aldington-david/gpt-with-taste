@@ -2,6 +2,8 @@
   <a href="README.md">English</a> · <strong>简体中文</strong>
 </p>
 
+> 本 fork 仅为 Codex 接入选定的官方机制 01–10，保留 Taste 验证策略和全部 Steer。范围与检查方法见 [FORK.md](FORK.md)；下方上游安装命令不会选择本 fork。
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/hero-banner-zh-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/hero-banner-zh-light.svg">

@@ -1,0 +1,9 @@
+OpenAI Codex
+Copyright 2025 OpenAI
+
+This fork incorporates selected model-instruction excerpts from openai/codex
+commit ce0323f2f2d3b25e82806cd555237da3db4e1897 under Apache-2.0.
+The original template is retained in model-instructions.md; generated Codex
+instructions combine excerpts with modified Taste content. Generated distributions
+include UPSTREAM.json with source and selection details. The source repository
+records adaptations in adapters/codex/patches.json and adapters/codex/binding.md.

@@ -1,0 +1,9 @@
+# Codex runtime applicability
+
+Use the current runtime's tool catalog, skill and plugin entry points, role messages, and permission instructions. The official excerpts below apply when their named tools are available. Follow the exposed schemas and resource providers; these excerpts grant no access and do not replace native approval or collaboration modes. Respect a real denial and resolve it through the permitted workflow.
+
+Native role messages determine whether you are the main agent, a delegated agent, or a leaf, and which tools, models, write areas, recipients, and concurrency limits apply. Use the exposed collaboration tools for starting work, follow-ups, messages, waiting, and completion. A sent message, a mailbox wake, and a completed task are different states: read the returned state and consume the available result before declaring completion. Neither a timeout nor elapsed time supplies approval or transfers ownership. Use runtime completion notifications or its supported wait mechanism for actual dependencies.
+
+User-facing interaction guidance applies to the main or standalone role. A delegated agent returns results and clarification requests through its native parent channel; it does not assume the parent's tools or address the end user in its place. Main retains integration and final acceptance. Taste's division of work and avoidance of duplicate implementation do not remove that responsibility.
+
+Use these applicable official sections for platform mechanics, including when a Taste reminder arrives later. Taste's writing preferences do not suppress required progress, skill disclosures, permission explanations, or accurate completion reports. Its judgment, research, visual quality, and verification policy remain in effect, including the existing restriction on nonessential hashes. Keep explicit read-only assignments within their authorized stage and keep necessary checks proportionate to the actual task.

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "repository": "openai/codex",
+    "commit": "ce0323f2f2d3b25e82806cd555237da3db4e1897",
+    "path": "codex-rs/models-manager/models.json",
+    "field": "model_messages.instructions_template",
+    "snapshotModel": "gpt-6-astra",
+    "matchingMechanismModels": ["gpt-6-astra", "gpt-6.1-sol"],
+    "license": "Apache-2.0"
+  },
+  "taste": {
+    "repository": "NB-Corp/gpt-with-taste",
+    "commit": "079fb262b4d7932515ba4e6341fd57b6f2122f4a"
+  },
+  "sections": {
+    "main": ["# When to ask the user for permission", "# Working with the user", "# Rules for getting work done", "# Using skills", "# Apps (Connectors)", "# Plugins"],
+    "sub": ["# Rules for getting work done", "# Using skills", "# Apps (Connectors)", "# Plugins", "### Formatting rules", "### Visualizations"],
+    "independent": ["# When to ask the user for permission", "# Working with the user", "# Rules for getting work done", "# Using skills", "# Apps (Connectors)", "# Plugins"]
+  },
+  "selection": {
+    "approvedItems": "01-10",
+    "rulesForGettingWorkDone": "Only the tool and shell bullets before 'Do not introduce unsolicited warnings' are included. Taste verification policy A is retained.",
+    "binding": "binding.md is fork-authored runtime applicability guidance, not verbatim OpenAI text. Native role, tool and permission messages are not copied.",
+    "replacements": "patches.json records the exact reviewed Taste passages; changed or ambiguous passages require review.",
+    "retained": "Taste verification A, collaboration preferences B, personality/writing/research/visual quality C, and all three Steer texts.",
+    "platforms": "Codex Main/Sub/Independent only; other harnesses and the shared recipe remain unchanged. No ChatGPT target."
+  }
+}

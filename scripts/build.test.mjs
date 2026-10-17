@@ -188,12 +188,14 @@ const authorTrace = /<!--\s*Generated from recipe\/|recipe\/manifest\.json|adapt
 const assertCleanContext = value => assert.doesNotMatch(JSON.stringify(value) ?? '', authorTrace);
 
 function assertBehaviorExports(files, {meta, texts}) {
-  for (const target of ['codex', 'kiki', 'pi', 'omp'])
+  for (const target of ['kiki', 'pi', 'omp'])
     for (const key of TEXT_KEYS)
       assert.equal(content(files, `dist/${target}/${meta.texts[key]}`), texts[key]);
-  for (const name of ['main', 'sub', 'user-steer', 'sub-steer', 'agent-steer']) {
-    const key = TEXT_KEYS.find(key => meta.texts[key] === `${name}.md`);
-    assert.equal(content(files, `prompts/${name}.md`), texts[key]);
+  if (files.has('dist/codex/main.md')) {
+    for (const name of ['main', 'sub', 'user-steer', 'sub-steer', 'agent-steer'])
+      assert.equal(content(files, `prompts/${name}.md`), content(files, `dist/codex/${name}.md`));
+    for (const key of ['userSteer', 'subSteer', 'agentSteer'])
+      assert.equal(content(files, `dist/codex/${meta.texts[key]}`), texts[key]);
   }
   const legacy = 'dist/kiki/sol-astra/';
   for (const pack of meta.compatibility.kiki.packages)
@@ -222,14 +224,15 @@ test('model-facing exports contain only complete behavior; provenance stays in s
   for (const target of TARGETS) assert.match(content(files, `dist/${target}/build-manifest.json`), /recipe\/manifest\.json/);
 });
 
-test('behavior sources are exported verbatim, including whitespace and literal user comments', async t => {
+test('other harnesses export arbitrary sources verbatim; Codex requires reviewed mechanism passages', async t => {
   const root = await fixture(t), {meta} = await loadRecipe(root), texts = {};
   for (const key of TEXT_KEYS) {
     texts[key] = ` \t\r\n# User-owned ${key}\r\n\r\nKeep this literal: <!-- Generated from my example. -->\r\n  tail\t \r\n\r\n`;
     await fs.writeFile(path.join(root, 'recipe', meta.texts[key]), texts[key]);
   }
   assert.deepEqual((await loadRecipe(root)).texts, texts);
-  assertBehaviorExports(await compile(root), {meta, texts});
+  assertBehaviorExports(await compile(root, TARGETS.filter(target => target !== 'codex')), {meta, texts});
+  await assert.rejects(compile(root, ['codex']), /Review the changed Taste main passage/);
 });
 
 test('actual generated callbacks and simulated provider payloads keep author metadata out of model context', async t => {

@@ -2,6 +2,8 @@
   <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a>
 </p>
 
+> Codex-only fork: approved mechanism items 01–10, with Taste verification and all Steer texts retained. See [fork scope and build checks](FORK.md). The upstream installation commands below do not select this fork.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/hero-banner-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/hero-banner-light.svg">
