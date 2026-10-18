@@ -1,0 +1,7 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "gpt-with-taste-chatgpt-only",
+  "version": "0.1.0",
+  "description": "Taste preferences for ChatGPT, with Codex skill discovery excluded.",
+  "license": "MIT"
+}

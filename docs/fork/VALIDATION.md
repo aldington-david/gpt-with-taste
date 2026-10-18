@@ -1,3 +1,37 @@
+# 验证记录：新增 ChatGPT 专用技能插件
+
+日期：2026-10-18；环境：Windows，Node.js 24.19.0，Codex 0.163.0-alpha.10.2。基线为 PR1 的 `5b041b0cbdc5f694dd39db64cd566094bd6f245b`。
+
+实际执行：
+
+```text
+node --test adapters/chatgpt-only/chatgpt-only.test.mjs
+2 passed, 0 failed
+
+package.json 中 test 对应的全部命令
+Node test runner: 84 passed, 0 failed, 0 skipped
+Pi consumer fixture passed
+OMP consumer fixture passed
+
+node scripts/build.mjs --check
+98 generated files checked
+```
+
+上面的 2 项已包含在全套 84 项中，不额外累计。新增构建目标的 6 个产物包含独立 portable manifest、完整技能、产品元数据、许可证与来源记录。新旧 SKILL.md 逐字一致，原 `recipe/`、`prompts/`、`dist/chatgpt/`、`dist/codex/` 和原 ChatGPT 适配器均无改动。
+
+另外使用真实 Codex CLI，在两个临时 home 中分别注册临时 marketplace 并安装同一个生成插件，再通过独立 app-server 的 `skills/list` 读取目录。对照副本只移除 `agents/openai.yaml`；测试产物保留生成文件原样：
+
+| 插件副本 | 安装结果 | Codex 技能目录 |
+| --- | --- | --- |
+| 对照：无产品限制 | 安装成功，版本 0.1.0 | 包含 `gpt-with-taste-chatgpt-only:taste` |
+| 生成产物：`products: [CHATGPT]` | 安装成功，版本 0.1.0 | 不包含该技能 |
+
+这证明本机客户端能安装新格式的插件，并对这份实际产物执行产品筛选。隔离过程没有创建模型任务、调用模型或改动日常 Codex home。没有验证云端账号上传/分发、ChatGPT 调用行为、其他客户端版本、所有能识别 `model_instructions_file` 的宿主或已有聊天的历史上下文；产品筛选不冒充通用能力检测。
+
+新插件的构建、使用、更新与兼容限制见 [ChatGPT 插件说明](../harnesses/chatgpt-only.md)。以下为已有提交的历史记录。
+
+---
+
 # 验证记录：rc.3 C1 / C2
 
 日期：2026-10-18。本轮实际运行：

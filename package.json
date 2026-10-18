@@ -13,7 +13,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "build:check": "node scripts/build.mjs --check",
-    "test": "node --test scripts/install.test.mjs scripts/check-updates.test.mjs hooks/steer.test.mjs scripts/build.test.mjs adapters/codex/native.test.mjs adapters/claude/claude.test.mjs && node adapters/pi/test.mjs && node adapters/omp/test.mjs",
+    "test": "node --test scripts/install.test.mjs scripts/check-updates.test.mjs hooks/steer.test.mjs scripts/build.test.mjs adapters/codex/native.test.mjs adapters/chatgpt-only/chatgpt-only.test.mjs adapters/claude/claude.test.mjs && node adapters/pi/test.mjs && node adapters/omp/test.mjs",
     "test:codex-native": "node --test adapters/codex/native.test.mjs",
     "test:codex-plugin": "node --test scripts/plugin-install.test.mjs",
     "test:dsh": "node --test adapters/dsh/dsh.test.mjs",

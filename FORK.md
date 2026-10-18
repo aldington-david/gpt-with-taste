@@ -20,6 +20,8 @@ C2 用户选择 B：缺少必要 skill 时，报告受影响的工作，只暂�
 
 ## 源码与构建
 
+另增 `chatgpt-only` 构建目标：独立的纯技能插件 `gpt-with-taste-chatgpt-only`，复用原 ChatGPT SKILL.md 的完整字节，通过 `products: [CHATGPT]` 排除 Codex 技能发现，让 Codex 继续使用原生 Main 入口。旧 `chatgpt` 产物保留；新旧 ChatGPT 插件不同时启用。构建、产品筛选和云端未验证范围见 [ChatGPT 插件说明](docs/harnesses/chatgpt-only.md)。
+
 `recipe/` 仍是完整上游作者源。`adapters/codex/compose.mjs` 组合官方机制摘录（含用户批准的 C2 单句适配）和 Taste 全文，`patches.json` 只允许空清单；不自动删句或压缩。原版 Steer 不再经过 `steering.json`。`adapters/chatgpt/` 独立生成偏好 skill，未导入 Codex 接口和 hooks。
 
 ```sh
