@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "forkRevision": "codex-native-0.1.0-rc.3",
+  "plan": "I: model_instructions_file replacement",
+  "fork": {
+    "repository": "aldington-david/gpt-with-taste",
+    "implementationBranch": "codex-native-mechanisms"
+  },
+  "taste": {
+    "repository": "NB-Corp/gpt-with-taste",
+    "branch": "master",
+    "reviewedCommit": "079fb262b4d7932515ba4e6341fd57b6f2122f4a",
+    "preservation": "Complete author sources and all three reminders retained verbatim."
+  },
+  "official": {
+    "repository": "openai/codex",
+    "reviewedCommit": "ce0323f2f2d3b25e82806cd555237da3db4e1897",
+    "path": "codex-rs/models-manager/models.json",
+    "blob": "72a78e0eacf94103f4babda2a5245aba4ce848c1",
+    "model": "gpt-6-astra",
+    "field": "model_messages.instructions_template",
+    "license": "Apache-2.0",
+    "scope": "Pinned public template excerpt; not a live account prompt or all-model compatibility claim."
+  },
+  "selectedSections": {
+    "mainAndIndependent": [
+      "When to ask the user for permission",
+      "Working with the user",
+      "Rules for getting work done",
+      "Using skills",
+      "Apps (Connectors)",
+      "Plugins"
+    ],
+    "sub": [
+      "Working with the user > Final answer > Formatting rules",
+      "Working with the user > Final answer > Visualizations",
+      "Rules for getting work done",
+      "Using skills",
+      "Apps (Connectors)",
+      "Plugins"
+    ]
+  },
+  "adaptations": {
+    "binding.md": "Fork-authored runtime applicability, role-channel scoping and state distinctions. NOT verbatim OpenAI text. Native role/permission messages are not copied.",
+    "patches.json": "All previous deletion entries reversed. Empty arrays are required; future replacements require separate review.",
+    "steering": "Uses recipe/user-steer.md, recipe/sub-steer.md and recipe/agent-steer.md verbatim. No summary and no additional full-template injection.",
+    "chatgpt": "Uses the complete Taste Main source verbatim, without the Codex deletion filter or mechanism excerpts.",
+    "C2-B": "One official missing-required-skill sentence is replaced in the generated Using skills section. Report the blocker, pause dependent work, continue authorized independent work; stop when none remains. The vendored official source and all Taste text remain unchanged. Exact before/after: compose.mjs missingSkillAdjustment."
+  },
+  "review": {
+    "status": "C1 reinterpreted in context without runtime text changes; C2 option B implemented. Runtime validation still required.",
+    "previousCandidate": "f2dd6332e40bf7a9c0fdfdd1af35304ef2588d58",
+    "audit": "docs/fork/RESTORATION-AUDIT.md",
+    "pending": [],
+    "decisions": {
+      "C1": "Keep both original texts: timely execution feedback is compatible with Taste’s content selection and avoidance of per-command narration. Do not recast Taste as applying only to cross-agent communication. No extra runtime wording or cadence added.",
+      "C2": "User explicitly chose B: pause work requiring the missing skill; continue already-authorized independent work."
+    },
+    "decisionRecord": "docs/fork/C1-C2-DECISIONS.md"
+  },
+  "officialDocs": [
+    "https://developers.openai.com/codex/multi-agent",
+    "https://learn.chatgpt.com/docs/hooks",
+    "https://developers.openai.com/plugins/build/plugins"
+  ],
+  "checkedDate": "2026-10-18",
+  "autoMerge": false,
+  "autoInstall": false
+}

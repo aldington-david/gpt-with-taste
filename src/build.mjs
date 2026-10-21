@@ -3,7 +3,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 
 // Add a target only after its adapter is ready; unselected adapters are not loaded.
-export const TARGETS = ['codex', 'kiki', 'claude', 'pi', 'omp', 'dsh'];
+export const TARGETS = ['codex', 'kiki', 'claude', 'pi', 'omp', 'dsh', 'chatgpt', 'chatgpt-only'];
 export const TEXT_KEYS = ['main', 'sub', 'independent', 'userSteer', 'subSteer', 'agentSteer'];
 const json = value => JSON.stringify(value, null, 2) + '\n';
 

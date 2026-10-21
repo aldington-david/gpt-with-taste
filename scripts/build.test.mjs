@@ -7,8 +7,10 @@ import {compile, loadRecipe, TARGETS, TEXT_KEYS} from '../src/build.mjs';
 import {run} from './build.mjs';
 import {run as install} from './install.mjs';
 import {pluginBundle, MARKET_ROOT} from '../src/codex-plugin.mjs';
+import {compose, loadPolicy} from '../adapters/codex/compose.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const codexPolicy = await loadPolicy(repo);
 async function fixture(t) {
   const scratch = path.join(repo, '.tmp/build-test');
   await fs.mkdir(scratch, {recursive: true});
@@ -188,12 +190,17 @@ const authorTrace = /<!--\s*Generated from recipe\/|recipe\/manifest\.json|adapt
 const assertCleanContext = value => assert.doesNotMatch(JSON.stringify(value) ?? '', authorTrace);
 
 function assertBehaviorExports(files, {meta, texts}) {
-  for (const target of ['codex', 'kiki', 'pi', 'omp'])
+  for (const target of ['kiki', 'pi', 'omp'])
     for (const key of TEXT_KEYS)
       assert.equal(content(files, `dist/${target}/${meta.texts[key]}`), texts[key]);
-  for (const name of ['main', 'sub', 'user-steer', 'sub-steer', 'agent-steer']) {
-    const key = TEXT_KEYS.find(key => meta.texts[key] === `${name}.md`);
-    assert.equal(content(files, `prompts/${name}.md`), texts[key]);
+  if (files.has('dist/codex/main.md')) {
+    const native = compose(texts, codexPolicy);
+    for (const key of TEXT_KEYS)
+      assert.equal(content(files, `dist/codex/${meta.texts[key]}`), native[key]);
+    for (const name of ['main', 'sub', 'user-steer', 'sub-steer', 'agent-steer']) {
+      const key = TEXT_KEYS.find(key => meta.texts[key] === `${name}.md`);
+      assert.equal(content(files, `prompts/${name}.md`), native[key]);
+    }
   }
   const legacy = 'dist/kiki/sol-astra/';
   for (const pack of meta.compatibility.kiki.packages)
@@ -222,14 +229,20 @@ test('model-facing exports contain only complete behavior; provenance stays in s
   for (const target of TARGETS) assert.match(content(files, `dist/${target}/build-manifest.json`), /recipe\/manifest\.json/);
 });
 
-test('behavior sources are exported verbatim, including whitespace and literal user comments', async t => {
+test('all projections preserve source text; native excerpts remain separate from literal content', async t => {
   const root = await fixture(t), {meta} = await loadRecipe(root), texts = {};
   for (const key of TEXT_KEYS) {
     texts[key] = ` \t\r\n# User-owned ${key}\r\n\r\nKeep this literal: <!-- Generated from my example. -->\r\n  tail\t \r\n\r\n`;
     await fs.writeFile(path.join(root, 'recipe', meta.texts[key]), texts[key]);
   }
   assert.deepEqual((await loadRecipe(root)).texts, texts);
-  assertBehaviorExports(await compile(root), {meta, texts});
+  assertBehaviorExports(await compile(root, TARGETS.filter(target => !['codex', 'chatgpt'].includes(target))), {meta, texts});
+  const native = await compile(root, ['codex', 'chatgpt']);
+  for (const key of ['main', 'sub', 'independent'])
+    assert.ok(content(native, `dist/codex/${meta.texts[key]}`).endsWith(texts[key]));
+  for (const key of ['userSteer', 'subSteer', 'agentSteer'])
+    assert.equal(content(native, `dist/codex/${meta.texts[key]}`), texts[key]);
+  assert.ok(content(native, 'dist/chatgpt/skills/taste/SKILL.md').endsWith(texts.main));
 });
 
 test('actual generated callbacks and simulated provider payloads keep author metadata out of model context', async t => {
@@ -238,6 +251,7 @@ test('actual generated callbacks and simulated provider payloads keep author met
   const moduleAt = relative => import(pathToFileURL(path.join(root, relative)).href);
   const wrapped = (key, tag = 'gpt-with-taste') => `<${tag}>\n${texts[key].trim()}\n</${tag}>`;
 
+  const native = compose(texts, await loadPolicy(root));
   const {handleHook} = await import('../hooks/steer.mjs');
   for (const [event, route, key] of [
     [{hook_event_name: 'UserPromptSubmit'}, 'user', 'userSteer'],
@@ -246,7 +260,7 @@ test('actual generated callbacks and simulated provider payloads keep author met
       tool_response: {timed_out: false, status: {child: {completed: 'done'}}}}, 'agent', 'agentSteer'],
   ]) {
     const output = handleHook(event, path.join(root, 'prompts'));
-    assert.equal(output.hookSpecificOutput.additionalContext, wrapped(key, `gpt-with-taste-${route}-steer`));
+    assert.equal(output.hookSpecificOutput.additionalContext, `<gpt-with-taste-${route}-steer>\n${native[key].trim()}\n</gpt-with-taste-${route}-steer>`);
     assertCleanContext(output);
   }
 

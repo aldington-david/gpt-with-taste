@@ -16,6 +16,9 @@
     "agentSteer": "recipe/agent-steer.md"
   },
   "files": [
+    "dist/codex/LICENSE-OpenAI.txt",
+    "dist/codex/NOTICE-OpenAI.txt",
+    "dist/codex/UPSTREAMS.json",
     "dist/codex/agent-steer.md",
     "dist/codex/build-manifest.json",
     "dist/codex/independent.md",
